@@ -6,7 +6,7 @@ namespace Spoonity {
     Skybox::Skybox(const ObjectData& data,
                    const std::vector<std::string>& faces,
                    const Shader& shader)
-        : GameObject(data, shader, true), _TextureFaces(faces)
+        : GameObject(data, true), _TextureFaces(faces), _Shader(shader)
     {
         //Initialise the cube texture
         _CubeTexture = InitCubeTexture();
@@ -20,7 +20,7 @@ namespace Spoonity {
     }
 
     //Render the object
-    void Skybox::draw(glm::mat4 projection, glm::mat4 view, glm::mat4 model)
+    void Skybox::draw(const Shader& shader, glm::mat4 projection, glm::mat4 view, glm::mat4 model)
     {
         if (_IsEnabled)
         {

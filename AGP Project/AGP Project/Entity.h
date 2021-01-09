@@ -17,11 +17,11 @@ namespace Spoonity {
 
 		//Constructor
 		Entity(const ObjectData& data,
-			   const std::string& modelPath,
-			   const Shader& shader);
+			   const std::string& modelPath
+		);
 
 		//Render the object
-		virtual void draw(glm::mat4 projection, glm::mat4 view, glm::mat4 model) override;
+		virtual void draw(const Shader& shader, glm::mat4 projection, glm::mat4 view, glm::mat4 model) override;
 
 		//Unused by skybox
 		virtual void update(float& deltaTime) override;

@@ -29,7 +29,7 @@ namespace Spoonity {
 		const Window* _Window;
 		const Camera* _Camera;
 
-		Shader _LightingShader, _LightsShader;
+		Shader _DepthShader, _GeometryShader, _LightingShader;
 
 		unsigned int _gBuffer, _gPosition, _gNormal, _gAlbedoSpec;
 

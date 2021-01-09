@@ -34,15 +34,14 @@ namespace Spoonity {
 		//Constructor
 		Actor(const ObjectData& data,
 			  Camera* camera,
-			  const std::string& modelPath = "",
-			  const Shader&	shader = Shader()
+			  const std::string& modelPath = ""
 		);
 
 		//Destructor
 		virtual ~Actor();
 
 		//Render the object
-		virtual void draw(glm::mat4 projection, glm::mat4 view, glm::mat4 model) = 0;
+		virtual void draw(const Shader& shader, glm::mat4 projection, glm::mat4 view, glm::mat4 model) = 0;
 
 		//Update the object
 		virtual void update(float& deltaTime) = 0;

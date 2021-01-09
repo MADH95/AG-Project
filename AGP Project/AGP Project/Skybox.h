@@ -17,6 +17,8 @@ namespace Spoonity {
 		//_Data - position, direction, and rotation data
 		//_GeometryShader - shader used to render the object
 
+		Shader _Shader;
+
 		//Skybox render data
 		std::vector<std::string> _TextureFaces;
 		unsigned int _VAO, _VBO, _CubeTexture;
@@ -31,7 +33,7 @@ namespace Spoonity {
 			   const Shader &shader);
 
 		//Render the object
-		void draw(glm::mat4 projection, glm::mat4 view, glm::mat4 model) override;
+		void draw(const Shader& shader, glm::mat4 projection, glm::mat4 view, glm::mat4 model) override;
 
 		//Unused by skybox
 		void update(float &deltaTime) override {}

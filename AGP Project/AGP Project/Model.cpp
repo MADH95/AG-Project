@@ -14,14 +14,14 @@ namespace Spoonity
 	}
 
 	//Render the model
-	void Model::draw(Shader shader, glm::mat4* model) const
+	void Model::draw(const Shader shader, const glm::mat4 &model) const
 	{
 		if(!_Meshes.empty())
 		{
 			for (unsigned int i = 0; i < _Meshes.size(); i++)
 			{
 				//Modifies the model matrix for the mesh's relative position
-				shader.setMat4("model", *model * _Transforms[i]);
+				shader.setMat4("model", model * _Transforms[i]);
 				_Meshes[i].Draw(shader);
 			}
 		}

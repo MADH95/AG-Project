@@ -21,11 +21,11 @@ namespace Spoonity {
 	}
 
 	//Draw the objects in the scene
-	void Scene::draw(glm::mat4 projection, glm::mat4 view, glm::mat4 model) const
+	void Scene::draw(const Shader &shader, glm::mat4 projection, glm::mat4 view, glm::mat4 model) const
 	{
 		for (GameObject* obj : *_SceneObjects)
 		{
-			obj->draw(projection, view, model);
+			obj->draw(shader, projection, view, model);
 		}
 	}
 

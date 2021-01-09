@@ -41,7 +41,7 @@ namespace Spoonity {
 		Model(std::string const& path, bool gamma = false);
 
 		//Render the model
-		void draw(Shader shader, glm::mat4* model) const;
+		void draw(const Shader shader, const glm::mat4 &model) const;
 
 	private:
 

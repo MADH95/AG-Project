@@ -53,12 +53,11 @@ void Game::gameLoop(float& deltaTime)
 				{
 					float distance = glm::length(specs->_Data.position - _Player->_Data.position);
 
-					if (distance <= 0.1f)
+					if (distance <= 0.1f && _Renderer->_PostProcessShader._ID != specs->_PostProcessShader._ID)
 					{
-						if (_Renderer->_PostProcessShader._ID != specs->_PostProcessShader._ID)
-						{
-							_Renderer->_PostProcessShader = specs->_PostProcessShader;
-						}
+						std::cout << "Collided!" << std::endl;
+
+						_Renderer->_PostProcessShader = specs->_PostProcessShader;
 					}
 				}
 
@@ -86,7 +85,7 @@ Spoonity::Scene* Game::loadOverworld()
 				"Data/Textures/skybox/back.jpg"
 			}
 		),
-		Spoonity::Shader("Data/Shaders/skybox_shader.vs", "Data/Shaders/skybox_shader.fs")
+		Spoonity::Shader("Data/Shaders/Skybox/skybox_shader.vs", "Data/Shaders/Skybox/skybox_shader.fs")
 	);
 
 	//Add the objects to the scene
@@ -99,8 +98,7 @@ Spoonity::Scene* Game::loadOverworld()
 			glm::vec3(1.0f, 0.0f, 0.0f),
 			glm::vec3(0.005f)
 		),
-		"Data/Models/SyntyStudios/PolygonWestern/western.fbx",
-		Spoonity::Shader("Data/Shaders/geometry_shader.vs", "Data/Shaders/geometry_shader.fs")
+		"Data/Models/SyntyStudios/PolygonWestern/western.fbx"
 	);
 
 	demo->enable(); //enable the object to be drawn
@@ -113,7 +111,16 @@ Spoonity::Scene* Game::loadOverworld()
 		glm::vec3(6.19f, 0.5f, -9.09f),
 		glm::vec3(-6.52f, 0.5f, -25.25f),
 		glm::vec3(6.28f, 0.5f, -19.57f),
-		glm::vec3(-8.32f, 0.5f, 59.79f)
+		glm::vec3(-8.32f, 0.5f, 59.79f),
+		glm::vec3(52.80f, 0.5f, -1.80)
+	};
+
+	std::vector<Spoonity::Shader> shaders{
+		Spoonity::Shader( /* TODO: Greyscale shader */ ),
+		Spoonity::Shader( /* TODO: X-Ray shader */ ),
+		Spoonity::Shader( /* TODO: Cell shader */ ),
+		Spoonity::Shader( /* TODO: 1st other shader */ ),
+		Spoonity::Shader( /* TODO: 2nd other shader */ )
 	};
 
 	Glasses* specs;
@@ -128,8 +135,7 @@ Spoonity::Scene* Game::loadOverworld()
 				glm::vec3(0.1f)
 			),
 			"Data/Models/backpack/backpack.obj",
-			Spoonity::Shader("Data/Shaders/geometry_shader.vs", "Data/Shaders/geometry_shader.fs"),
-			Spoonity::Shader( /* TODO: Add post processing shader */)
+			shaders[i]
 		);
 
 		specs->enable();

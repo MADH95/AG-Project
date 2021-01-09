@@ -27,7 +27,7 @@ namespace Spoonity {
 		~Scene();
 
 		//Draw the objects in the scene
-		void draw(glm::mat4 projection, glm::mat4 view, glm::mat4 model) const;
+		void draw(const Shader &shader, glm::mat4 projection, glm::mat4 view, glm::mat4 model) const;
 
 		//Update the objects in the scene
 		void update(float &deltaTime) const;

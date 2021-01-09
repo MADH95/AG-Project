@@ -1,10 +1,9 @@
 #include "Glasses.h"
 
-Glasses::Glasses(const Spoonity::ObjectData&	data,
+Glasses::Glasses(const Spoonity::ObjectData& data,
 				 const std::string& modelPath,
-				 const Spoonity::Shader& shader,
 				 const Spoonity::Shader& postProcessShader)
-	: Entity(data, modelPath, shader), _PostProcessShader(postProcessShader)
+	: Entity(data, modelPath), _PostProcessShader(postProcessShader)
 {
 }
 

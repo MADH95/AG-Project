@@ -13,12 +13,11 @@ namespace Spoonity {
     Renderer::Renderer(const Window* window, const Camera* camera)
         : _Window(window), _Camera(camera)
 	{
-        _LightingShader = Shader("Data/Shaders/lighting_shader.vs", "Data/Shaders/lighting_shader.fs");
-        _LightsShader = Shader("Data/Shaders/light_shader.vs", "Data/Shaders/light_shader.fs");
+        _DepthShader = Shader("Data/Shaders/Depth/depth_shader.vs","Data/Shaders/Depth/depth_shader.fs");
+        _GeometryShader = Shader("Data/Shaders/Geometry/geometry_shader.vs", "Data/Shaders/Geometry/geometry_shader.fs");
+        _LightingShader = Shader("Data/Shaders/Lighting/lighting_shader.vs", "Data/Shaders/Lighting/lighting_shader.fs");
 
-        //TODO: add default for post processing shader
-
-
+        _PostProcessShader = Shader("Data/Shaders/PostProcessing/default_shader.vs", "Data/Shaders/PostProcessing/default_shader.fs");
 
 		//Tell stb_image.h to flip loaded texture's on the y-axis (before loading model)
 		//stbi_set_flip_vertically_on_load(true);
@@ -130,7 +129,7 @@ namespace Spoonity {
         glm::mat4 view = _Camera->GetViewMatrix();
         glm::mat4 model = glm::mat4(1.0f);
         
-        _CurrentScene->draw(projection, view, model);
+        _CurrentScene->draw(_GeometryShader, projection, view, model);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
