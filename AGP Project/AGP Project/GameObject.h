@@ -21,10 +21,12 @@ namespace Spoonity {
 	class GameObject
 	{
 	//Variables
-	protected:
-		bool _IsEnabled, _FlipYAxis;
-
+	public:
 		ObjectData _Data;
+
+	protected:
+		bool _IsEnabled;
+
 
 		Shader _Shader;
 
@@ -35,7 +37,8 @@ namespace Spoonity {
 		GameObject(const ObjectData &data,
 				   const Shader &shader,
 				   const bool &enabled = false)
-			: _Data(data), _Shader(shader), _IsEnabled(enabled) {
+			: _Data(data), _Shader(shader), _IsEnabled(enabled)
+		{
 		}
 
 		//Destructor

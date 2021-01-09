@@ -48,8 +48,6 @@ int main()
 		while (engine->isRunning())
 		{
 			engine->runtimeLoop();
-
-			//std::cout << "Engine is running!" << std::endl;
 		}
 
 		delete engine;

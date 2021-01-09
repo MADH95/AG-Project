@@ -16,6 +16,10 @@ namespace Spoonity {
         _LightingShader = Shader("Data/Shaders/lighting_shader.vs", "Data/Shaders/lighting_shader.fs");
         _LightsShader = Shader("Data/Shaders/light_shader.vs", "Data/Shaders/light_shader.fs");
 
+        //TODO: add default for post processing shader
+
+
+
 		//Tell stb_image.h to flip loaded texture's on the y-axis (before loading model)
 		//stbi_set_flip_vertically_on_load(true);
 
@@ -60,7 +64,7 @@ namespace Spoonity {
         //Normal color buffer
         glGenTextures(1, &_gNormal);
         glBindTexture(GL_TEXTURE_2D, _gNormal);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, _Window->getWidth(), _Window->getHeight(), 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, _gNormal, 0);

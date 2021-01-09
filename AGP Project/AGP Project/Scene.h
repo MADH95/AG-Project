@@ -16,7 +16,6 @@ namespace Spoonity {
 	public:
 		Level _ID;
 
-	private:
 		std::vector<GameObject*> *_SceneObjects;
 
 	//Functions

@@ -37,8 +37,35 @@ Game::~Game()
 //Overriding gameloop
 void Game::gameLoop(float& deltaTime)
 {
-	//TODO: Game logic
+	//Update the player
 	_Player->update(deltaTime);
+
+	//Gheto Collision detection
+	for (auto scene = _Scenes.begin(); scene < _Scenes.end(); scene++)
+	{
+		if ((*scene)->_ID == Level::Overworld)
+		{
+			for (auto obj = (*scene)->_SceneObjects->begin(); obj < (*scene)->_SceneObjects->end(); obj++)
+			{
+				Glasses* specs = dynamic_cast<Glasses*>(*obj);
+
+				if (specs)
+				{
+					float distance = glm::length(specs->_Data.position - _Player->_Data.position);
+
+					if (distance <= 0.1f)
+					{
+						if (_Renderer->_PostProcessShader._ID != specs->_PostProcessShader._ID)
+						{
+							_Renderer->_PostProcessShader = specs->_PostProcessShader;
+						}
+					}
+				}
+
+				specs = nullptr;
+			}
+		}
+	}
 }
 
 //Load default scene
