@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Spoonity">
+      <UniqueIdentifier>{2a48c72e-2815-4f9e-a335-d4b7a292574c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\STD">
+      <UniqueIdentifier>{c44042b5-b603-4895-a15c-28053ac40e4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Spoonity">
+      <UniqueIdentifier>{3713ca09-84ee-4d14-8e98-ca5a1ce5cc9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Spoonity\Graphics">
+      <UniqueIdentifier>{ad6313e1-2e8a-4f60-8698-f2bfb1f3d04e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Spoonity\Model Loading">
+      <UniqueIdentifier>{a2448a2b-89e4-45ee-a41e-4b2de0cc6cff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Spoonity\Game Objects">
+      <UniqueIdentifier>{0ffb95b3-d49f-4dc0-8da5-8adf2ccf49b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Spoonity\Input">
+      <UniqueIdentifier>{beb6c8c5-e002-4754-befc-9dbdc95bd0a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Spoonity\Game Objects">
+      <UniqueIdentifier>{53d0f96e-faf5-4565-8401-3378e4247e8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Spoonity\Graphics">
+      <UniqueIdentifier>{1f4d96b4-7127-441c-82fb-c12dc6a16a4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Spoonity\Model Loading">
+      <UniqueIdentifier>{2cc59498-cddf-4da4-b609-28009548520a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\STD">
+      <UniqueIdentifier>{2610b80f-7cc3-4271-a70b-0a693e411cd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\STD\Game Objects">
+      <UniqueIdentifier>{4bf04438-8135-4c5a-abe1-37b7e3b2a8d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\STD\Game Objects">
+      <UniqueIdentifier>{9706a6a4-5a64-4e05-be5d-e40776911fa0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files\Spoonity\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyCode.h">
+      <Filter>Header Files\Spoonity\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseCode.h">
+      <Filter>Header Files\Spoonity\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>Header Files\Spoonity\Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files\Spoonity\Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files\Spoonity\Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files\Spoonity\Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\Spoonity\Model Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files\Spoonity\Model Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Spoonity\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files\Spoonity\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files\Spoonity\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files\Spoonity\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files\Spoonity\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Header Files\Spoonity\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Header Files\Spoonity</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files\STD</Filter>
+    </ClInclude>
+    <ClInclude Include="Glasses.h">
+      <Filter>Header Files\STD\Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files\STD\Game Objects</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
+      <Filter>Source Files\Spoonity\Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files\Spoonity\Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files\Spoonity\Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Spoonity\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source Files\Spoonity\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files\Spoonity\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="stb_image.cpp">
+      <Filter>Source Files\Spoonity\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Source Files\Spoonity\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files\Spoonity\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files\Spoonity\Model Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files\Spoonity\Model Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Source Files\Spoonity</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files\Spoonity</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files\STD</Filter>
+    </ClCompile>
+    <ClCompile Include="Glasses.cpp">
+      <Filter>Source Files\STD\Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\STD\Game Objects</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
