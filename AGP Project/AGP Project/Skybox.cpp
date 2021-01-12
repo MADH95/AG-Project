@@ -19,6 +19,13 @@ namespace Spoonity {
         _Shader.setInt("skybox", 0);
     }
 
+    //Destructor
+    Skybox::~Skybox()
+    {
+        glDeleteVertexArrays(1, &_VAO);
+        glDeleteBuffers(1, &_VBO);
+    }
+
     //Render the object
     void Skybox::draw(const Shader& shader, glm::mat4 projection, glm::mat4 view, glm::mat4 model)
     {
@@ -39,6 +46,7 @@ namespace Spoonity {
             glBindTexture(GL_TEXTURE_CUBE_MAP, _CubeTexture);
             glDrawArrays(GL_TRIANGLES, 0, 36);
             glBindVertexArray(0);
+            glDepthFunc(GL_LESS);
         }
     }
 

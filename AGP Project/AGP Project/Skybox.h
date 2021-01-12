@@ -32,6 +32,9 @@ namespace Spoonity {
 			   const std::vector<std::string> &faces,
 			   const Shader &shader);
 
+		//Destructor
+		~Skybox();
+
 		//Render the object
 		void draw(const Shader& shader, glm::mat4 projection, glm::mat4 view, glm::mat4 model) override;
 

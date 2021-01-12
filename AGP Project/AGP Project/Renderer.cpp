@@ -4,6 +4,7 @@ namespace Spoonity {
 
     Renderer::Renderer()
         : _Window(nullptr), _Camera(nullptr),
+        _DepthMapFBO(0), _DepthMap(0),
         _gBuffer(0), _gPosition(0), _gNormal(0), _gAlbedoSpec(0),
         _CurrentScene(nullptr),
         quadVAO(0), quadVBO(0)
@@ -17,13 +18,19 @@ namespace Spoonity {
         _GeometryShader = Shader("Data/Shaders/Geometry/geometry_shader.vs", "Data/Shaders/Geometry/geometry_shader.fs");
         _LightingShader = Shader("Data/Shaders/Lighting/lighting_shader.vs", "Data/Shaders/Lighting/lighting_shader.fs");
 
-        _PostProcessShader = Shader("Data/Shaders/PostProcessing/default_shader.vs", "Data/Shaders/PostProcessing/default_shader.fs");
+        debugDepthShader = Shader("Data/Shaders/Depth/debug.vs", "Data/Shaders/Depth/debug.fs");
+
+        //_PostProcessShader = Shader("Data/Shaders/PostProcessing/default_shader.vs", "Data/Shaders/PostProcessing/default_shader.fs");
 
 		//Tell stb_image.h to flip loaded texture's on the y-axis (before loading model)
 		//stbi_set_flip_vertically_on_load(true);
 
 		//Configure global opengl state
 		glEnable(GL_DEPTH_TEST);
+
+        //Set the light data
+        _LightDirection = glm::vec3(1.0f, -1.0f, 1.0f);
+        _LightColor = glm::vec3(0.5f);
 		
         //Initialise the shaders
 		genBuffers();
@@ -45,6 +52,29 @@ namespace Spoonity {
 	//Function for configuring buffers
 	void Renderer::genBuffers()
 	{
+        /*
+        //Shadow map
+        glGenFramebuffers(1, &_DepthMapFBO);
+        glGenTextures(1, &_DepthMap);
+        glBindTexture(GL_TEXTURE_2D, _DepthMap);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, _DepthMapFBO);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _DepthMap, 0);
+        //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, _DepthMap, 0);
+        glDrawBuffer(GL_NONE);
+        glReadBuffer(GL_NONE);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        */
         //Configure framebuffer
         glGenFramebuffers(1, &_gBuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, _gBuffer);
@@ -77,7 +107,7 @@ namespace Spoonity {
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, _gAlbedoSpec, 0);
 
         //Tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
-        unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+        unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 /*, GL_COLOR_ATTACHMENT3*/ };
         glDrawBuffers(3, attachments);
 
         //Create and attach depth buffer (renderbuffer)
@@ -118,16 +148,47 @@ namespace Spoonity {
         //Render
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glDepthFunc(GL_LESS);
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-        // 1. geometry pass: render scene's geometry/color data into gbuffer
-        glBindFramebuffer(GL_FRAMEBUFFER, _gBuffer);
+        unsigned int width = _Window->getWidth();
+        unsigned int height = _Window->getHeight();
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glm::mat4 projection = glm::perspective(glm::radians(_Camera->_FOV), (float)_Window->getWidth() / (float)_Window->getHeight(), 0.1f, 500.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(_Camera->_FOV), (float)width / (float)height, 0.1f, 500.0f);
         glm::mat4 view = _Camera->GetViewMatrix();
         glm::mat4 model = glm::mat4(1.0f);
+        
+        /*
+        // 0. depth pass: render scene from the lights perspective to get shadows
+        float near_plane = 1.0f, far_plane = 16.0f;
+        glm::vec3 lightOffset = glm::vec3(-10.0f, 10.0f, -10.0f);
+        glm::vec3 lightPos = _Camera->_Position + lightOffset;
+        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        glm::mat4 lightView = glm::lookAt(lightOffset, lightOffset + _LightDirection, _Camera->_WorldUp);
+        glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+
+        _DepthShader.use();
+        _DepthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, _DepthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        _Skybox->disable();
+        
+        _CurrentScene->draw(_DepthShader, lightProjection, lightView, model);
+
+        _Skybox->enable();
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glViewport(0, 0, width, height);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        */
+
+        // 1. geometry pass: render scene's geometry/color data into gbuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, _gBuffer);
         
         _CurrentScene->draw(_GeometryShader, projection, view, model);
 
@@ -142,22 +203,29 @@ namespace Spoonity {
         glBindTexture(GL_TEXTURE_2D, _gNormal);
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, _gAlbedoSpec);
+        //glActiveTexture(GL_TEXTURE3);
+        //glBindTexture(GL_TEXTURE_2D, _DepthMap);
         //Send light relevant uniforms
-        _LightingShader.setVec3("lights[0].Position", _Camera->_Position);
-        _LightingShader.setVec3("lights[0].Color", glm::vec3(1.0f));
+        _LightingShader.setVec3("light.Position", _LightPosition); //position not used for directional lighting
+        _LightingShader.setVec3("light.Color", _LightColor);
+        _LightingShader.setVec3("light.Direction", _LightDirection);
         // update attenuation parameters and calculate radius
-        const float constant = 1.0f; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
+        const float constant = 1.0f;
         const float linear = 0.7f;
         const float quadratic = 1.8f;
-        _LightingShader.setFloat("lights[0].Linear", linear);
-        _LightingShader.setFloat("lights[0].Quadratic", quadratic);
+        //_LightingShader.setFloat("light.constant", constant);
+        //_LightingShader.setFloat("light.Linear", linear);
+        //_LightingShader.setFloat("light.Quadratic", quadratic);
 
+        /*
         // then calculate radius of light volume/sphere
         const float maxBrightness = 1.0f;
         float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (256.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
-        _LightingShader.setFloat("lights[0].Radius", radius);
-        
+        _LightingShader.setFloat("light.Radius", radius);
+        */
+
         _LightingShader.setVec3("viewPos", _Camera->_Position);
+        //_LightingShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
         // finally render quad
         glBindVertexArray(quadVAO);
@@ -170,13 +238,19 @@ namespace Spoonity {
         // blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
         // the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		
         // depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
-        glBlitFramebuffer(0, 0, _Window->getWidth(), _Window->getHeight(), 0, 0, _Window->getWidth(), _Window->getHeight(), GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+        glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // TODO: 3. Post processing
         //------------------------
-
-
+        
+        /*
+        debugDepthShader.use();
+        debugDepthShader.setFloat("near_plane", near_plane);
+        debugDepthShader.setFloat("far_plane", far_plane);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, _DepthMap);
+        */
 
         //------------------------
 

@@ -88,6 +88,8 @@ Spoonity::Scene* Game::loadOverworld()
 		Spoonity::Shader("Data/Shaders/Skybox/skybox_shader.vs", "Data/Shaders/Skybox/skybox_shader.fs")
 	);
 
+	_Renderer->_Skybox = sky;
+
 	//Add the objects to the scene
 	objs->emplace_back(sky);
 
@@ -106,7 +108,7 @@ Spoonity::Scene* Game::loadOverworld()
 	objs->emplace_back(demo);
 
 	//TODO: add other objects as required.
-
+	
 	std::vector<glm::vec3> positions {
 		glm::vec3(6.19f, 0.5f, -9.09f),
 		glm::vec3(-6.52f, 0.5f, -25.25f),
@@ -114,7 +116,7 @@ Spoonity::Scene* Game::loadOverworld()
 		glm::vec3(-8.32f, 0.5f, 59.79f),
 		glm::vec3(52.80f, 0.5f, -1.80)
 	};
-
+	
 	std::vector<Spoonity::Shader> shaders{
 		Spoonity::Shader( /* TODO: Greyscale shader */ ),
 		Spoonity::Shader( /* TODO: X-Ray shader */ ),
@@ -122,7 +124,7 @@ Spoonity::Scene* Game::loadOverworld()
 		Spoonity::Shader( /* TODO: 1st other shader */ ),
 		Spoonity::Shader( /* TODO: 2nd other shader */ )
 	};
-
+	
 	Glasses* specs;
 
 	for (int i = 0; i < positions.size(); i++)
@@ -130,7 +132,7 @@ Spoonity::Scene* Game::loadOverworld()
 		specs = new Glasses(
 			Spoonity::ObjectData(
 				positions[i],
-				/*Angle*/ 0.0f,
+				0.0f, //Angle
 				glm::vec3(1.0f, 0.0f, 0.0f),
 				glm::vec3(0.1f)
 			),
@@ -141,6 +143,7 @@ Spoonity::Scene* Game::loadOverworld()
 		specs->enable();
 		objs->emplace_back(specs);
 	}
+	
 
 	//Return a scene with the added objects
 	return new Spoonity::Scene(Level::Overworld, objs);
