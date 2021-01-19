@@ -108,7 +108,7 @@ Spoonity::Scene* Game::loadOverworld()
 	objs->emplace_back(demo);
 
 	//TODO: add other objects as required.
-	
+	/*
 	std::vector<glm::vec3> positions {
 		glm::vec3(6.19f, 0.5f, -9.09f),
 		glm::vec3(-6.52f, 0.5f, -25.25f),
@@ -118,11 +118,11 @@ Spoonity::Scene* Game::loadOverworld()
 	};
 	
 	std::vector<Spoonity::Shader> shaders{
-		Spoonity::Shader( /* TODO: Greyscale shader */ ),
-		Spoonity::Shader( /* TODO: X-Ray shader */ ),
-		Spoonity::Shader( /* TODO: Cell shader */ ),
-		Spoonity::Shader( /* TODO: 1st other shader */ ),
-		Spoonity::Shader( /* TODO: 2nd other shader */ )
+		Spoonity::Shader(), // TODO: Greyscale shader
+		Spoonity::Shader(), // TODO: X-Ray shader
+		Spoonity::Shader(), // TODO: Cell shader
+		Spoonity::Shader(), // TODO: 1st other shader
+		Spoonity::Shader()  // TODO: 2nd other shader
 	};
 	
 	Glasses* specs;
@@ -143,7 +143,7 @@ Spoonity::Scene* Game::loadOverworld()
 		specs->enable();
 		objs->emplace_back(specs);
 	}
-	
+	*/
 
 	//Return a scene with the added objects
 	return new Spoonity::Scene(Level::Overworld, objs);
