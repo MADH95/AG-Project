@@ -40,7 +40,7 @@ void Game::gameLoop(float& deltaTime)
 	//Update the player
 	_Player->update(deltaTime);
 
-	//Gheto Collision detection
+	//Ghetto Collision detection
 	for (auto scene = _Scenes.begin(); scene < _Scenes.end(); scene++)
 	{
 		if ((*scene)->_ID == Level::Overworld)

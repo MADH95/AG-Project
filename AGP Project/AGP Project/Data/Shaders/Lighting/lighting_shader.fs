@@ -60,14 +60,15 @@ vec3 CalcDirLight(vec3 FragPos, vec3 Normal, vec3 Diffuse, float Specular)
     // attenuation - not used for directional lighting
     //float attenuation = 1.0 / (light.Constant + light.Linear * distance + light.Quadratic * distance * distance);
     // shadow
-	//float shadow = CalcShadow(lightDir, Normal, FragPos);
+	float shadow = CalcShadow(lightDir, Normal, FragPos);
 	
 	//combine results
 	//ambient *= attenuation;
 	//diffuse *= attenuation;
     //specular *= attenuation;
     
-	return ambient /*+ (1.0 - shadow)*/ + diffuse + specular;
+	//return ambient + (1.0 - shadow) + diffuse + specular;
+	return (shadow * (diffuse + specular) + ambient);
 }
 
 float CalcShadow(vec3 LightDir, vec3 Normal, vec3 FragPos)
@@ -78,6 +79,9 @@ float CalcShadow(vec3 LightDir, vec3 Normal, vec3 FragPos)
 	//project coordinates
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
 	projCoords = projCoords * 0.5 + 0.5;
+	
+	if(projCoords.z > 1.0)
+		projCoords.z = 1.0;
 	
 	//depth calculations
 	float closestDepth = texture(depthMap, projCoords.xy).r;
@@ -95,10 +99,7 @@ float CalcShadow(vec3 LightDir, vec3 Normal, vec3 FragPos)
 			shadow += (currentDepth - bias > pcfDepth ? 1.0 : 0.0);
 		}
 	}
-	shadow /= 9.0;
-	
-	if(projCoords.z > 1.0)
-		shadow = 0.0;
+	shadow /= 9.0;	
 		
 	return shadow;
 }
