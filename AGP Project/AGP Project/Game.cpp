@@ -41,7 +41,7 @@ void Game::gameLoop(float& deltaTime)
 	_Player->update(deltaTime);
 
 	//Ghetto Collision detection
-	for (auto scene = _Scenes.begin(); scene < _Scenes.end(); scene++)
+	/*for (auto scene = _Scenes.begin(); scene < _Scenes.end(); scene++)
 	{
 		if ((*scene)->_ID == Level::Overworld)
 		{
@@ -64,7 +64,7 @@ void Game::gameLoop(float& deltaTime)
 				specs = nullptr;
 			}
 		}
-	}
+	}*/
 }
 
 //Load default scene

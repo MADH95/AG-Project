@@ -57,7 +57,7 @@ void Player::processInput(float& deltaTime)
 
 	//Temporary variables
 	float velocity = _Data.speed * deltaTime;
-	glm::vec3 front = glm::vec3(_Data.direction.x, 0.0f, _Data.direction.z);
+	glm::vec3 front = normalize(glm::vec3(_Data.direction.x, 0.0f, _Data.direction.z));
 	glm::vec3& right = _Camera->_Right;
 
 	//Left shift is sprint key

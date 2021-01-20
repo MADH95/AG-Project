@@ -29,7 +29,7 @@ namespace Spoonity {
 		glEnable(GL_DEPTH_TEST);
 
         //Set the light data
-        _LightPosition = glm::vec3(-50.0f, 50.0f, -50.0f);
+        //_LightPosition = glm::vec3(-50.0f, 50.0f, -50.0f);
         _LightDirection = glm::vec3(1.0f, -1.0f, 1.0f);
         _LightColor = glm::vec3(0.5f);
 		
@@ -170,9 +170,9 @@ namespace Spoonity {
         glm::mat4 model = glm::mat4(1.0f);
         
         // 0. depth pass: render scene from the lights perspective to get shadows
-        float near_plane = 1.0f, far_plane = 160.0f;
-        //_LightPosition = cameraPos + glm::vec3(-10.0f, 10.0f, -10.0f);
-        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        float near_plane = 1.0f, far_plane = 20.0f;
+        _LightPosition = _Camera->_Position + glm::vec3(-7.0f, 7.0f, -7.0f);
+        glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
         glm::mat4 lightView = glm::lookAt(_LightPosition, _LightPosition + _LightDirection, _Camera->_WorldUp);
         glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
