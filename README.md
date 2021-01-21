@@ -5,3 +5,5 @@ Project for Advanced Graphics class at University West of Scotland.
 
 - Fixed lighting shaders to properly calculate shadow lighting
 - Fixed how shadows are displayed
+
+Project for Advanced Graphics class at University West of Scotland.

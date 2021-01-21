@@ -32,7 +32,7 @@ namespace Spoonity {
 
 		Shader _DepthShader, _GeometryShader, _LightingShader, debugDepthShader;
 
-		const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+		const unsigned int SHADOW_WIDTH = 8192, SHADOW_HEIGHT = 8192;
 
 		unsigned int _DepthMapFBO, _DepthMap;
 

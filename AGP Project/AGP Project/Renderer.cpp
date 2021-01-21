@@ -20,7 +20,7 @@ namespace Spoonity {
 
         debugDepthShader = Shader("Data/Shaders/Depth/debug.vs", "Data/Shaders/Depth/debug.fs");
 
-        //_PostProcessShader = Shader("Data/Shaders/PostProcessing/default_shader.vs", "Data/Shaders/PostProcessing/default_shader.fs");
+        _PostProcessShader = Shader("Data/Shaders/PostProcessing/default_shader.vs", "Data/Shaders/PostProcessing/default_shader.fs");
 
 		//Tell stb_image.h to flip loaded texture's on the y-axis (before loading model)
 		//stbi_set_flip_vertically_on_load(true);
@@ -29,7 +29,7 @@ namespace Spoonity {
 		glEnable(GL_DEPTH_TEST);
 
         //Set the light data
-        _LightPosition = glm::vec3(-50.0f, 50.0f, -50.0f);
+        //_LightPosition = glm::vec3(-50.0f, 50.0f, -50.0f);
         _LightDirection = glm::vec3(1.0f, -1.0f, 1.0f);
         _LightColor = glm::vec3(0.5f);
 		
@@ -159,7 +159,7 @@ namespace Spoonity {
         
         glDepthFunc(GL_LESS);
 
-        //For rendering debug
+        //For debugging rendering
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         
         unsigned int width = _Window->getWidth();
@@ -171,8 +171,9 @@ namespace Spoonity {
         
         
         // 0. depth pass: render scene from the lights perspective to get shadows
-        float near_plane = 1.0f, far_plane = 160.0f;
-        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        float near_plane = 1.0f, far_plane = 20.0f;
+        _LightPosition = _Camera->_Position + glm::vec3(-7.0f, 7.0f, -7.0f);
+        glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
         glm::mat4 lightView = glm::lookAt(_LightPosition, _LightPosition + _LightDirection, _Camera->_WorldUp);
         glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
@@ -201,6 +202,8 @@ namespace Spoonity {
         glBindFramebuffer(GL_FRAMEBUFFER, _gBuffer);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        _GeometryShader.setVec3("viewPos", _Camera->_Position);
+
         _CurrentScene->draw(_GeometryShader, projection, view, model);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -221,13 +224,14 @@ namespace Spoonity {
         _LightingShader.setVec3("light.Color", _LightColor);
         _LightingShader.setVec3("light.Direction", _LightDirection);
         // update attenuation parameters and calculate radius
-        /*const float constant = 1.0f;
+        /*
+        const float constant = 1.0f;
         const float linear = 0.7f;
         const float quadratic = 1.8f;
         _LightingShader.setFloat("light.Constant", constant);
         _LightingShader.setFloat("light.Linear", linear);
         _LightingShader.setFloat("light.Quadratic", quadratic);
-        
+
         // then calculate radius of light volume/sphere
         const float maxBrightness = 1.0f;
         float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (256.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
@@ -257,12 +261,12 @@ namespace Spoonity {
         
        /*
        debugDepthShader.use();
-       debugDepthShader.setFloat("near_plane", near_plane);
-       debugDepthShader.setFloat("far_plane", far_plane);
-       glActiveTexture(GL_TEXTURE0);
-       glBindTexture(GL_TEXTURE_2D, _DepthMap);
-       glBindVertexArray(quadVAO);
-       glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        debugDepthShader.setFloat("near_plane", near_plane);
+        debugDepthShader.setFloat("far_plane", far_plane);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, _DepthMap);
+        glBindVertexArray(quadVAO);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
        glBindVertexArray(0);
        */
 

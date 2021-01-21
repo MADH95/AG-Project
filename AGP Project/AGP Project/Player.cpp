@@ -57,7 +57,7 @@ void Player::processInput(float& deltaTime)
 
 	//Temporary variables
 	float velocity = _Data.speed * deltaTime;
-	glm::vec3 front = glm::vec3(_Data.direction.x, 0.0f, _Data.direction.z);
+	glm::vec3 front = normalize(glm::vec3(_Data.direction.x, 0.0f, _Data.direction.z));
 	glm::vec3& right = _Camera->_Right;
 
 	//Left shift is sprint key
@@ -73,6 +73,16 @@ void Player::processInput(float& deltaTime)
 		_Camera->_Position += right * velocity;
 	if (Input::isKeyPressed(KeyCode::A))
 		_Camera->_Position -= right * velocity;
+
+	//Flight controls
+	if (Input::isKeyPressed(KeyCode::Space))
+		_Camera->_Position += _Camera->_WorldUp * velocity;
+	if (Input::isKeyPressed(KeyCode::LeftControl))
+		_Camera->_Position -= _Camera->_WorldUp * velocity;
+
+	//Clamp Height
+	if (_Camera->_Position.y < 0.7f)
+		_Camera->_Position.y = 0.7f;
 
 	//Update the player position based on camera position
 	_Data.position = _Camera->_Position - glm::vec3(0.0f, 0.2f, 0.0f);

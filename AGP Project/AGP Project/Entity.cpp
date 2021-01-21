@@ -22,7 +22,7 @@ namespace Spoonity {
 
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, _Data.position);
-			model = glm::rotate(model, _Data.angle, _Data.direction);
+			model = glm::rotate(model, glm::radians(_Data.angle), _Data.direction);
 			model = glm::scale(model, _Data.scale);
 
 			_Model.draw(shader, model);
