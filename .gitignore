@@ -3,3 +3,12 @@
 
 # Files
 *.user
+*.exe
+*.obj
+*.tlog
+*.idb
+*.ilk
+*.pbd
+*.ipch
+*.db
+*.suo

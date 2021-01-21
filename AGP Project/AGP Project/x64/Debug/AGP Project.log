@@ -1,2 +1,10 @@
-﻿  Renderer.cpp
+﻿  Engine.cpp
+  Entity.cpp
+  Game.cpp
+  Glasses.cpp
+  Mesh.cpp
+  Player.cpp
+  Renderer.cpp
+  main.cpp
+  Generating Code...
   AGP Project.vcxproj -> C:\Users\Martin\OneDrive - University of the West of Scotland\Marco\Advanced Graphics\Group Project\AGP Project\x64\Debug\AGP Project.exe
