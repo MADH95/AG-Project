@@ -7,6 +7,7 @@ namespace Spoonity {
         _LightColor(glm::vec3(0.0f)), _LightDirection(glm::vec3(0.0f)), _LightPosition(glm::vec3(0.0f)),
         _DepthMapFBO(0), _DepthMap(0),
         _gBuffer(0), _gPosition(0), _gNormal(0), _gAlbedoSpec(0),
+        _ScreenBuffer(0), _ScreenTexture(0),
         _CurrentScene(nullptr),
         quadVAO(0), quadVBO(0)
     {
@@ -21,10 +22,11 @@ namespace Spoonity {
 
         debugDepthShader = Shader("Data/Shaders/Depth/debug.vs", "Data/Shaders/Depth/debug.fs");
 
-        _PostProcessShader = Shader("Data/Shaders/PostProcessing/default_shader.vs", "Data/Shaders/PostProcessing/default_shader.fs");
+        _PostProcessShader = Shader("Data/Shaders/PostProcessing/Default/default_shader.vs", "Data/Shaders/PostProcessing/Default/default_shader.fs");
 
 		//Tell stb_image.h to flip loaded texture's on the y-axis (before loading model)
 		//stbi_set_flip_vertically_on_load(true);
+
 
 		//Configure global opengl state
 		glEnable(GL_DEPTH_TEST);
@@ -34,6 +36,9 @@ namespace Spoonity {
         _LightDirection = glm::vec3(1.0f, -1.0f, 1.0f);
         _LightColor = glm::vec3(0.5f);
 		
+        //Set Path for the stencil mask
+        _StencilPath = "Data/Textures/Glasses_Stencil.png";
+
         //Initialise the shaders
 		genBuffers();
 
@@ -80,13 +85,11 @@ namespace Spoonity {
 
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        
+
         
         //Configure framebuffer
         glGenFramebuffers(1, &_gBuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, _gBuffer);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         unsigned int width = _Window->getWidth();
         unsigned int height = _Window->getHeight();
@@ -129,9 +132,65 @@ namespace Spoonity {
         //Finally check if framebuffer is complete
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
-            throw "Framebuffer not complete!";
+            throw "Geometry buffer not complete!";
         }
+
+        glGenFramebuffers(1, &_ScreenBuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, _ScreenBuffer);
+
+        glGenTextures(1, &_ScreenTexture);
+        glBindTexture(GL_TEXTURE_2D, _ScreenTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _ScreenTexture, 0);
+
+        //Finally check if framebuffer is complete
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        {
+            throw "Screen buffer not complete!";
+        }
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+        stbi_set_flip_vertically_on_load(true);
+
+        glGenTextures(1, &_StencilMask);
+
+        int StencilWidth, StencilHeight, nrComponents;
+        unsigned char* data = stbi_load(_StencilPath, &StencilWidth, &StencilHeight, &nrComponents, 0);
+        if (data)
+        {
+            GLenum format;
+            if (nrComponents == 1)
+                format = GL_RED;
+            else if (nrComponents == 3)
+                format = GL_RGB;
+            else if (nrComponents == 4)
+                format = GL_RGBA;
+
+            glBindTexture(GL_TEXTURE_2D, _StencilMask);
+            glTexImage2D(GL_TEXTURE_2D, 0, format, StencilWidth, height, 0, format, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Stencil failed to load at path: " << _StencilPath << std::endl;
+            stbi_image_free(data);
+        }
+
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_set_flip_vertically_on_load(false);
 
         float quadVertices[] = {
             // positions        // texture Coords
@@ -156,7 +215,7 @@ namespace Spoonity {
 	{
         //Render
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         
         glDepthFunc(GL_LESS);
 
@@ -165,6 +224,7 @@ namespace Spoonity {
         
         unsigned int width = _Window->getWidth();
         unsigned int height = _Window->getHeight();
+        glm::vec3 cameraPos = _Camera->_Position;
 
         glm::mat4 projection = glm::perspective(glm::radians(_Camera->_FOV), (float)width / (float)height, 0.1f, 500.0f);
         glm::mat4 view = _Camera->GetViewMatrix();
@@ -173,7 +233,7 @@ namespace Spoonity {
         
         // 0. depth pass: render scene from the lights perspective to get shadows
         float near_plane = 1.0f, far_plane = 20.0f;
-        _LightPosition = _Camera->_Position + glm::vec3(-7.0f, 7.0f, -7.0f);
+        _LightPosition = cameraPos + glm::vec3(-7.0f, 7.0f, -7.0f);
         glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
         glm::mat4 lightView = glm::lookAt(_LightPosition, _LightPosition + _LightDirection, _Camera->_WorldUp);
         glm::mat4 lightSpaceMatrix = lightProjection * lightView;
@@ -192,25 +252,27 @@ namespace Spoonity {
         _CurrentScene->draw(_DepthShader, lightProjection, lightView, model);
 
         _Skybox->enable();
-        
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glFrontFace(GL_CCW);
         // 1. geometry pass: render scene's geometry/color data into gbuffer
         glBindFramebuffer(GL_FRAMEBUFFER, _gBuffer);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-        _GeometryShader.setVec3("viewPos", _Camera->_Position);
+        _GeometryShader.setVec3("viewPos", cameraPos);
 
         _CurrentScene->draw(_GeometryShader, projection, view, model);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+
         // 2. lighting pass: calculate lighting by iterating over a screen filled quad pixel-by-pixel using the gbuffer's content.
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glBindFramebuffer(GL_FRAMEBUFFER, _ScreenBuffer);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
         _LightingShader.use();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, _gPosition);
@@ -239,39 +301,48 @@ namespace Spoonity {
         _LightingShader.setFloat("light.Radius", radius);
         */
         
-        _LightingShader.setVec3("viewPos", _Camera->_Position);
+        _LightingShader.setVec3("viewPos", cameraPos);
         _LightingShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
-        // finally render quad
         glBindVertexArray(quadVAO);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glBindVertexArray(0);
 
-        // 2.5. copy content of geometry's depth buffer to default framebuffer's depth buffer
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, _gBuffer);
+        // TODO: 3. Post processing
+        //------------------------
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        _PostProcessShader.use();
+        _PostProcessShader.setInt("screenTexture", 0);
+        _PostProcessShader.setInt("stencilMask", 1);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, _ScreenTexture);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, _StencilMask);
+        
+        
+        /*
+        debugDepthShader.use();
+        debugDepthShader.setFloat("near_plane", near_plane);
+        debugDepthShader.setFloat("far_plane", far_plane);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, _DepthMap);
+        */
+
+        //------------------------
+
+        glBindVertexArray(quadVAO);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glBindVertexArray(0);
+
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, _ScreenBuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
         // blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
         // the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		
         // depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
         glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        // TODO: 3. Post processing
-        //------------------------
-        
-        
-       /*
-       debugDepthShader.use();
-        debugDepthShader.setFloat("near_plane", near_plane);
-        debugDepthShader.setFloat("far_plane", far_plane);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _DepthMap);
-        glBindVertexArray(quadVAO);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-       glBindVertexArray(0);
-       */
-
-        //------------------------
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(_Window->getInstance());

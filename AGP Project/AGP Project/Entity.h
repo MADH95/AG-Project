@@ -15,7 +15,9 @@ namespace Spoonity {
 	//Functions
 	public:
 
-		//Constructor
+		//Constructors
+		Entity() {}
+
 		Entity(const ObjectData& data,
 			   const std::string& modelPath
 		);

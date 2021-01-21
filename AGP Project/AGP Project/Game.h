@@ -10,6 +10,10 @@ class Game : public Spoonity::Engine
 public:
 	std::vector<Spoonity::Scene*> _Scenes;
 
+	Spoonity::Entity* _Specs;
+
+	bool _HasGlasses;
+
 //Functions
 public:
 

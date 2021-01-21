@@ -30,7 +30,9 @@ namespace Spoonity {
 	//Functions
 	public:
 
-		//Constructor
+		//Constructors
+		GameObject() :_Data(ObjectData()) {}
+
 		GameObject(const ObjectData &data,
 				   const bool &enabled = false)
 			: _Data(data), _IsEnabled(enabled)
