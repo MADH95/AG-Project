@@ -1,10 +1,19 @@
-﻿  Engine.cpp
+﻿  Actor.cpp
+  Camera.cpp
+  Engine.cpp
   Entity.cpp
   Game.cpp
   Glasses.cpp
+  Input.cpp
+  main.cpp
   Mesh.cpp
+  Model.cpp
   Player.cpp
   Renderer.cpp
-  main.cpp
+  Scene.cpp
+  Shader.cpp
+  Skybox.cpp
+  stb_image.cpp
+  Window.cpp
   Generating Code...
   AGP Project.vcxproj -> C:\Users\Martin\OneDrive - University of the West of Scotland\Marco\Advanced Graphics\Group Project\AGP Project\x64\Debug\AGP Project.exe

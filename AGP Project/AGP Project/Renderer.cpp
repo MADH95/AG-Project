@@ -3,7 +3,8 @@
 namespace Spoonity {
 
     Renderer::Renderer()
-        : _Window(nullptr), _Camera(nullptr),
+        : _Window(nullptr), _Camera(nullptr), _Skybox(nullptr),
+        _LightColor(glm::vec3(0.0f)), _LightDirection(glm::vec3(0.0f)), _LightPosition(glm::vec3(0.0f)),
         _DepthMapFBO(0), _DepthMap(0),
         _gBuffer(0), _gPosition(0), _gNormal(0), _gAlbedoSpec(0),
         _CurrentScene(nullptr),
