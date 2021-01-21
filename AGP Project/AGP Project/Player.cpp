@@ -74,6 +74,16 @@ void Player::processInput(float& deltaTime)
 	if (Input::isKeyPressed(KeyCode::A))
 		_Camera->_Position -= right * velocity;
 
+	//Flight controls
+	if (Input::isKeyPressed(KeyCode::Space))
+		_Camera->_Position += _Camera->_WorldUp * velocity;
+	if (Input::isKeyPressed(KeyCode::LeftControl))
+		_Camera->_Position -= _Camera->_WorldUp * velocity;
+
+	//Clamp Height
+	if (_Camera->_Position.y < 0.7f)
+		_Camera->_Position.y = 0.7f;
+
 	//Update the player position based on camera position
 	_Data.position = _Camera->_Position - glm::vec3(0.0f, 0.2f, 0.0f);
 

@@ -21,7 +21,7 @@ namespace Spoonity {
         for (unsigned int i = 0; i < _Textures.size(); i++)
         {
             //Active proper texture unit before binding
-            glActiveTexture(GL_TEXTURE0 + i); 
+            glActiveTexture(GL_TEXTURE0 + i);
             //Retrieve texture number (the N in diffuse_textureN)
             std::string number;
             std::string name = _Textures[i].type;
@@ -35,7 +35,7 @@ namespace Spoonity {
                 number = std::to_string(heightNr++);    //Transfer unsigned int to stream
 
             //Now set the sampler to the correct texture unit
-            shader.setInt(("material." + name + number).c_str(), i);
+            shader.setInt(("material." + (name + number)).c_str(), i);
             //Bind the texture
             glBindTexture(GL_TEXTURE_2D, _Textures[i].id);
         }

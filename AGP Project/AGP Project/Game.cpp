@@ -40,8 +40,16 @@ void Game::gameLoop(float& deltaTime)
 	//Update the player
 	_Player->update(deltaTime);
 
+	for (auto it = _Scenes.begin(); it != _Scenes.end(); it++)
+	{
+		if ((*it)->_ID == Level::Overworld)
+		{
+			(*it)->update(deltaTime);
+		}
+	}
+
 	//Ghetto Collision detection
-	/*for (auto scene = _Scenes.begin(); scene < _Scenes.end(); scene++)
+	for (auto scene = _Scenes.begin(); scene < _Scenes.end(); scene++)
 	{
 		if ((*scene)->_ID == Level::Overworld)
 		{
@@ -64,7 +72,7 @@ void Game::gameLoop(float& deltaTime)
 				specs = nullptr;
 			}
 		}
-	}*/
+	}
 }
 
 //Load default scene
@@ -96,7 +104,7 @@ Spoonity::Scene* Game::loadOverworld()
 	Spoonity::Entity* demo = new Spoonity::Entity(
 		Spoonity::ObjectData(
 			glm::vec3(0.0f),
-			/*Angle*/ 0.0f,
+			0.0f, //Angle
 			glm::vec3(1.0f, 0.0f, 0.0f),
 			glm::vec3(0.005f)
 		),
@@ -108,7 +116,7 @@ Spoonity::Scene* Game::loadOverworld()
 	objs->emplace_back(demo);
 
 	//TODO: add other objects as required.
-	/*
+	
 	std::vector<glm::vec3> positions {
 		glm::vec3(6.19f, 0.5f, -9.09f),
 		glm::vec3(-6.52f, 0.5f, -25.25f),
@@ -133,17 +141,17 @@ Spoonity::Scene* Game::loadOverworld()
 			Spoonity::ObjectData(
 				positions[i],
 				0.0f, //Angle
-				glm::vec3(1.0f, 0.0f, 0.0f),
+				glm::vec3(0.0f, 1.0f, 0.0f),
 				glm::vec3(0.1f)
 			),
-			"Data/Models/backpack/backpack.obj",
+			"Data/Models/Glasses/oculos.obj",
 			shaders[i]
 		);
 
 		specs->enable();
 		objs->emplace_back(specs);
 	}
-	*/
+	
 
 	//Return a scene with the added objects
 	return new Spoonity::Scene(Level::Overworld, objs);

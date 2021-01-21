@@ -20,7 +20,7 @@ namespace Spoonity {
 
         debugDepthShader = Shader("Data/Shaders/Depth/debug.vs", "Data/Shaders/Depth/debug.fs");
 
-        //_PostProcessShader = Shader("Data/Shaders/PostProcessing/default_shader.vs", "Data/Shaders/PostProcessing/default_shader.fs");
+        _PostProcessShader = Shader("Data/Shaders/PostProcessing/default_shader.vs", "Data/Shaders/PostProcessing/default_shader.fs");
 
 		//Tell stb_image.h to flip loaded texture's on the y-axis (before loading model)
 		//stbi_set_flip_vertically_on_load(true);
@@ -200,6 +200,8 @@ namespace Spoonity {
         // 1. geometry pass: render scene's geometry/color data into gbuffer
         glBindFramebuffer(GL_FRAMEBUFFER, _gBuffer);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        _GeometryShader.setVec3("viewPos", _Camera->_Position);
 
         _CurrentScene->draw(_GeometryShader, projection, view, model);
 
