@@ -38,6 +38,10 @@ namespace Spoonity {
 
 		unsigned int _gBuffer, _gPosition, _gNormal, _gAlbedoSpec;
 
+		unsigned int _ScreenBuffer, _ScreenTexture, _StencilMask;
+		
+		const char* _StencilPath;
+
 		unsigned int quadVAO, quadVBO;
 
 		//TODO: lighting class/rename

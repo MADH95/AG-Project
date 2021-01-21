@@ -62,7 +62,7 @@ void Player::processInput(float& deltaTime)
 
 	//Left shift is sprint key
 	if (Input::isKeyPressed(KeyCode::LeftShift))
-		velocity *= 1.4f;
+		velocity *= 1.6f;
 
 	//Set the new position of the camera based on the keys W, A, S, & D
 	if (Input::isKeyPressed(KeyCode::W))
@@ -73,7 +73,8 @@ void Player::processInput(float& deltaTime)
 		_Camera->_Position += right * velocity;
 	if (Input::isKeyPressed(KeyCode::A))
 		_Camera->_Position -= right * velocity;
-
+	
+	/*
 	//Flight controls
 	if (Input::isKeyPressed(KeyCode::Space))
 		_Camera->_Position += _Camera->_WorldUp * velocity;
@@ -83,6 +84,7 @@ void Player::processInput(float& deltaTime)
 	//Clamp Height
 	if (_Camera->_Position.y < 0.7f)
 		_Camera->_Position.y = 0.7f;
+	*/
 
 	//Update the player position based on camera position
 	_Data.position = _Camera->_Position - glm::vec3(0.0f, 0.2f, 0.0f);

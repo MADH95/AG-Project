@@ -51,24 +51,31 @@ void Game::gameLoop(float& deltaTime)
 	//Ghetto Collision detection
 	for (auto scene = _Scenes.begin(); scene < _Scenes.end(); scene++)
 	{
+		//Check the correct scene
 		if ((*scene)->_ID == Level::Overworld)
 		{
+			//Loop through the objects in the scene
 			for (auto obj = (*scene)->_SceneObjects->begin(); obj < (*scene)->_SceneObjects->end(); obj++)
 			{
+				//Try to cast the object to a Glasses
 				Glasses* specs = dynamic_cast<Glasses*>(*obj);
 
+				//Only do collision detection if it is a Glasses object
 				if (specs)
 				{
+					//Get the distance between the object and the player
 					float distance = glm::length(specs->_Data.position - _Player->_Data.position);
 
-					if (distance <= 0.1f && _Renderer->_PostProcessShader._ID != specs->_PostProcessShader._ID)
+					//If the distance is within range, and the render shader is not the same as the collided specs
+					if (distance <= 0.2f && _Renderer->_PostProcessShader._ID != specs->_PostProcessShader._ID)
 					{
-						std::cout << "Collided!" << std::endl;
-
+						//std::cout << "Collided!" << std::endl;
+						//Set the rederer post processing shader to the specific one for those specs
 						_Renderer->_PostProcessShader = specs->_PostProcessShader;
 					}
 				}
 
+				//Null out specs
 				specs = nullptr;
 			}
 		}
@@ -126,11 +133,11 @@ Spoonity::Scene* Game::loadOverworld()
 	};
 	
 	std::vector<Spoonity::Shader> shaders{
-		Spoonity::Shader(), // TODO: Greyscale shader
-		Spoonity::Shader(), // TODO: X-Ray shader
-		Spoonity::Shader(), // TODO: Cell shader
-		Spoonity::Shader(), // TODO: 1st other shader
-		Spoonity::Shader()  // TODO: 2nd other shader
+		Spoonity::Shader("Data/Shaders/PostProcessing/Greyscale/greyscale_shader.vs", "Data/Shaders/PostProcessing/Greyscale/greyscale_shader.fs"), // Greyscale shader
+		Spoonity::Shader("Data/Shaders/PostProcessing/X-Ray/x-ray_shader.vs", "Data/Shaders/PostProcessing/X-Ray/x-ray_shader.fs"), // X-Ray shader
+		Spoonity::Shader("Data/Shaders/PostProcessing/EdgeDetection/edgedetection_shader.vs", "Data/Shaders/PostProcessing/EdgeDetection/edgedetection_shader.fs"), // Edge Detection shader
+		Spoonity::Shader("Data/Shaders/PostProcessing/DeepFry/deepfry_shader.vs", "Data/Shaders/PostProcessing/DeepFry/deepfry_shader.fs"), // Deep Fry Shader
+		Spoonity::Shader("Data/Shaders/PostProcessing/Sepia/sepia_shader.vs", "Data/Shaders/PostProcessing/Sepia/sepia_shader.fs") // Sepia Shader
 	};
 	
 	Glasses* specs;
@@ -151,7 +158,6 @@ Spoonity::Scene* Game::loadOverworld()
 		specs->enable();
 		objs->emplace_back(specs);
 	}
-	
 
 	//Return a scene with the added objects
 	return new Spoonity::Scene(Level::Overworld, objs);
