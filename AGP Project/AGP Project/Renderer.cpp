@@ -226,10 +226,9 @@ namespace Spoonity {
         unsigned int height = _Window->getHeight();
         glm::vec3 cameraPos = _Camera->_Position;
 
-        glm::mat4 projection = glm::perspective(glm::radians(_Camera->_FOV), (float)width / (float)height, 0.1f, 500.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(_Camera->_FOV), (float)width / (float)height, 0.0075f, 500.0f);
         glm::mat4 view = _Camera->GetViewMatrix();
         glm::mat4 model = glm::mat4(1.0f);
-        
         
         // 0. depth pass: render scene from the lights perspective to get shadows
         float near_plane = 1.0f, far_plane = 20.0f;
