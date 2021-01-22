@@ -1,5 +1,6 @@
 #pragma once
 #include "Actor.h"
+#include "Entity.h"
 #include "Camera.h"
 
 class Player : public Spoonity::Actor

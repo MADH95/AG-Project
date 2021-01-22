@@ -9,7 +9,7 @@
 Game::Game() : Engine( new Player(Spoonity::ObjectData()))
 {
 
-	//initEngine();
+	_HasGlasses = false;
 
 	_Scenes.emplace_back(loadOverworld());
 
@@ -72,6 +72,9 @@ void Game::gameLoop(float& deltaTime)
 						//std::cout << "Collided!" << std::endl;
 						//Set the rederer post processing shader to the specific one for those specs
 						_Renderer->_PostProcessShader = specs->_PostProcessShader;
+
+						_HasGlasses = true;
+						_Specs->enable();
 					}
 				}
 
@@ -79,6 +82,16 @@ void Game::gameLoop(float& deltaTime)
 				specs = nullptr;
 			}
 		}
+	}
+
+	if (_HasGlasses)
+	{
+		glm::vec3 offset = glm::vec3(0.0f, 0.2f, 0.0f) + (_Player->_Data.direction * 0.1f);
+		_Specs->_Data.position = _Player->_Data.position + offset;
+
+		_Specs->_Data.angle = _Player->_Data.angle;
+
+		_Specs->_Data.scale = glm::vec3(1.0f);
 	}
 }
 
@@ -158,6 +171,22 @@ Spoonity::Scene* Game::loadOverworld()
 		specs->enable();
 		objs->emplace_back(specs);
 	}
+
+	Spoonity::Entity* wearableGlasses = new Spoonity::Entity(
+		Spoonity::ObjectData(
+			glm::vec3(0.0f, -10.0f, 0.0f),
+			0.0f, //Angle
+			glm::vec3(0.0f, 1.0f, 0.0f),
+			glm::vec3(0.01f)
+		),
+		"Data/Models/Glasses/oculos.obj"
+	);
+
+	wearableGlasses->enable();
+
+	objs->emplace_back(wearableGlasses);
+
+	_Specs = wearableGlasses;
 
 	//Return a scene with the added objects
 	return new Spoonity::Scene(Level::Overworld, objs);
