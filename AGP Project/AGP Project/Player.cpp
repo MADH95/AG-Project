@@ -58,6 +58,10 @@ void Player::processInput(float& deltaTime)
 	if (Input::isKeyPressed(KeyCode::Escape))
 		Input::closeWindow();
 
+	//Remove Glasses
+	if (Input::isKeyPressed(KeyCode::F))
+		_IsSpeccyBastard = false;
+
 	//Temporary variables
 	float velocity = _Data.speed * deltaTime;
 	glm::vec3 front = glm::normalize(glm::vec3(_Data.front.x, 0.0f, _Data.front.z));

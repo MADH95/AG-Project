@@ -8,8 +8,9 @@
 //Constructor
 Game::Game() : Engine( new Player(Spoonity::ObjectData()))
 {
+	_DefaultShader = Spoonity::Shader("Data/Shaders/PostProcessing/Default/default_shader.vs", "Data/Shaders/PostProcessing/Default/default_shader.fs");
 
-	_HasGlasses = false;
+	_Player->_IsSpeccyBastard = false;
 
 	_Scenes.emplace_back(loadOverworld());
 
@@ -73,7 +74,7 @@ void Game::gameLoop(float& deltaTime)
 						//Set the rederer post processing shader to the specific one for those specs
 						_Renderer->_PostProcessShader = specs->_PostProcessShader;
 
-						_HasGlasses = true;
+						_Player->_IsSpeccyBastard = true;
 						_Specs->enable();
 					}
 				}
@@ -84,13 +85,18 @@ void Game::gameLoop(float& deltaTime)
 		}
 	}
 
-	if (_HasGlasses)
+	if (_Player->_IsSpeccyBastard)
 	{
 		glm::vec3 offset = glm::vec3(0.0f, 0.1991f, 0.0f) + (_Player->_Data.front * 0.008f);
 		_Specs->_Data.position = _Player->_Data.position + offset;
 
 		_Specs->_Data.angle.x = _Player->_Data.angle.x + 90.0f;
 		_Specs->_Data.angle.y = _Player->_Data.angle.y;
+	}
+	else
+	{
+		_Specs->disable();
+		_Renderer->_PostProcessShader = _DefaultShader;
 	}
 }
 

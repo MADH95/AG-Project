@@ -25,6 +25,8 @@ namespace Spoonity {
 	public:
 		Camera* _Camera;
 
+		bool _IsSpeccyBastard;
+
 	protected:
 		Model _Model;
 

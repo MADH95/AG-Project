@@ -3,6 +3,7 @@
 
 #include "Engine.h"
 #include "Scene.h"
+#include "Shader.h"
 
 class Game : public Spoonity::Engine
 {
@@ -12,7 +13,7 @@ public:
 
 	Spoonity::Entity* _Specs;
 
-	bool _HasGlasses;
+	Spoonity::Shader _DefaultShader;
 
 //Functions
 public:

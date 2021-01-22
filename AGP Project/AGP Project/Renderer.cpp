@@ -22,7 +22,8 @@ namespace Spoonity {
 
         debugDepthShader = Shader("Data/Shaders/Depth/debug.vs", "Data/Shaders/Depth/debug.fs");
 
-        _PostProcessShader = Shader("Data/Shaders/PostProcessing/Default/default_shader.vs", "Data/Shaders/PostProcessing/Default/default_shader.fs");
+        //Not Required because of player input to cancel wearing glasses
+        //_PostProcessShader = Shader("Data/Shaders/PostProcessing/Default/default_shader.vs", "Data/Shaders/PostProcessing/Default/default_shader.fs");
 
 		//Tell stb_image.h to flip loaded texture's on the y-axis (before loading model)
 		//stbi_set_flip_vertically_on_load(true);
