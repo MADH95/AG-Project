@@ -86,7 +86,7 @@ void Game::gameLoop(float& deltaTime)
 
 	if (_HasGlasses)
 	{
-		glm::vec3 offset = glm::vec3(0.0f, 0.1991f, -0.0002f) + (_Player->_Data.front * 0.008f);
+		glm::vec3 offset = glm::vec3(0.0f, 0.1991f, 0.0f) + (_Player->_Data.front * 0.008f);
 		_Specs->_Data.position = _Player->_Data.position + offset;
 
 		_Specs->_Data.angle.x = _Player->_Data.angle.x + 90.0f;

@@ -13,6 +13,7 @@ Player::Player(const Spoonity::ObjectData& data,
 	_Camera->_Pitch = _Data.angle.y;
 	
 	_Data.front = _Camera->_Front;
+	_Data.front = _Camera->_Up;
 	_Data.updateVectors();
 
 	_Data.scale = glm::vec3(1.0f);
