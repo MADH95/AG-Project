@@ -86,12 +86,11 @@ void Game::gameLoop(float& deltaTime)
 
 	if (_HasGlasses)
 	{
-		glm::vec3 offset = glm::vec3(0.0f, 0.2f, 0.0f) + (_Player->_Data.direction * 0.1f);
+		glm::vec3 offset = glm::vec3(0.0f, 0.1991f, -0.0002f) + (_Player->_Data.front * 0.008f);
 		_Specs->_Data.position = _Player->_Data.position + offset;
 
-		_Specs->_Data.angle = _Player->_Data.angle;
-
-		_Specs->_Data.scale = glm::vec3(1.0f);
+		_Specs->_Data.angle.x = _Player->_Data.angle.x + 90.0f;
+		_Specs->_Data.angle.y = _Player->_Data.angle.y;
 	}
 }
 
@@ -124,8 +123,9 @@ Spoonity::Scene* Game::loadOverworld()
 	Spoonity::Entity* demo = new Spoonity::Entity(
 		Spoonity::ObjectData(
 			glm::vec3(0.0f),
-			0.0f, //Angle
+			glm::vec2(0.0f),
 			glm::vec3(1.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f),
 			glm::vec3(0.005f)
 		),
 		"Data/Models/SyntyStudios/PolygonWestern/western.fbx"
@@ -160,8 +160,9 @@ Spoonity::Scene* Game::loadOverworld()
 		specs = new Glasses(
 			Spoonity::ObjectData(
 				positions[i],
-				0.0f, //Angle
+				glm::vec2(0.0f),
 				glm::vec3(0.0f, 1.0f, 0.0f),
+				glm::vec3(-1.0f, 0.0f, 0.0f),
 				glm::vec3(0.1f)
 			),
 			"Data/Models/Glasses/oculos.obj",
@@ -175,9 +176,10 @@ Spoonity::Scene* Game::loadOverworld()
 	Spoonity::Entity* wearableGlasses = new Spoonity::Entity(
 		Spoonity::ObjectData(
 			glm::vec3(0.0f, -10.0f, 0.0f),
-			0.0f, //Angle
-			glm::vec3(0.0f, 1.0f, 0.0f),
-			glm::vec3(0.01f)
+			glm::vec2(0.0f),
+			glm::vec3(0.0f, -1.0f, 0.0f),
+			glm::vec3(1.0f, 0.0f, 0.0f),
+			glm::vec3(0.0401f, 0.0452f, -0.01f)
 		),
 		"Data/Models/Glasses/oculos.obj"
 	);

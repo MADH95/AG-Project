@@ -18,11 +18,12 @@ namespace Spoonity {
 			shader.setMat4("projection", projection);
 			shader.setMat4("view", view);
 
-			glm::vec3 lookPos = _Data.position + _Data.direction;
+			glm::vec3 lookPos = _Data.position + _Data.front;
 
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, _Data.position);
-			model = glm::rotate(model, glm::radians(_Data.angle), _Data.direction);
+			model = glm::rotate(model, glm::radians(_Data.angle.x), _Data.front);
+			model = glm::rotate(model, glm::radians(_Data.angle.y), _Data.up);
 			model = glm::scale(model, _Data.scale);
 
 			_Model.draw(shader, model);

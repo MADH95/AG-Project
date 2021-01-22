@@ -3,15 +3,17 @@
 //Constructor
 Player::Player(const Spoonity::ObjectData& data,
 			   const std::string&		   modelPath)
-	: Actor(data, new Spoonity::Camera(data.position, data.direction), modelPath)
+	: Actor(data, new Spoonity::Camera(data.position, data.front), modelPath)
 {
 	_Data.position = glm::vec3(0.0f, 0.5f, 0.0f);
 	_Camera->_Position = _Data.position + glm::vec3(0.0f, 0.2f, 0.0f);
 
-	_Data.angle = -90.0f;
-	_Camera->_Yaw = _Data.angle;
+	_Data.angle = glm::vec2(-90.0f, 0.0f);
+	_Camera->_Yaw = _Data.angle.x;
+	_Camera->_Pitch = _Data.angle.y;
 	
-	_Data.direction = _Camera->_Front;
+	_Data.front = _Camera->_Front;
+	_Data.updateVectors();
 
 	_Data.scale = glm::vec3(1.0f);
 	_Data.speed = 2.0f;
@@ -33,7 +35,7 @@ void Player::draw(const Spoonity::Shader& shader, glm::mat4 projection, glm::mat
 
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, _Data.position);
-		model = glm::rotate(model, glm::radians(_Data.angle), _Data.direction);
+		model = glm::rotate(model, glm::radians(_Data.angle.x), _Data.up);
 		model = glm::scale(model, _Data.scale);
 
 		_Model.draw(shader, model);
@@ -57,7 +59,7 @@ void Player::processInput(float& deltaTime)
 
 	//Temporary variables
 	float velocity = _Data.speed * deltaTime;
-	glm::vec3 front = normalize(glm::vec3(_Data.direction.x, 0.0f, _Data.direction.z));
+	glm::vec3 front = glm::normalize(glm::vec3(_Data.front.x, 0.0f, _Data.front.z));
 	glm::vec3& right = _Camera->_Right;
 
 	//Left shift is sprint key
@@ -119,5 +121,9 @@ void Player::processInput(float& deltaTime)
 
 	_Camera->updateCameraVectors();
 
-	_Data.direction = _Camera->_Front;
+	_Data.front = _Camera->_Front;
+	_Data.updateVectors();
+
+	_Data.angle.x = _Camera->_Yaw;
+	_Data.angle.y = _Camera->_Pitch;
 }
